@@ -1,6 +1,12 @@
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
+from datetime import date
+
+# fecha y nombre del archivo
+
+fecha = date.today().strftime("%d-%m-%y")
+name = "output/" + fecha + ".csv"
 
 # número de issue
 
@@ -48,17 +54,13 @@ while run:
             assignees = ["No one assigned"]
 
         for l in range(len(assignees)):
-            df = df.append(
-                {
+            new_row = {
                     "issue": issue,
                     "author": author,
                     "state": state,
                     "assignees": assignees[l],
-                },
-                ignore_index=True,
-            )
+                }
+            df = pd.concat([df, pd.DataFrame([new_row])], axis=0, ignore_index=True)
     issue += 1
-    print(df)
 
-
-df.to_csv("issues.csv", index=False)
+df.to_csv(name, index=False)
